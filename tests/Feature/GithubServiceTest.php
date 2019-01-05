@@ -14,10 +14,10 @@ class GithubServiceTest extends TestCase
     public function testFetchGithubRepository()
     {
         $service = new GithubService();
-        $response = $service->fetchGithubRepository($owner = 'vuejs', $name = 'vue');
+        $repository = $service->fetchGithubRepository($owner = 'vuejs', $name = 'vue');
 
         $this->assertEquals(
-            $response['repository']['id'],
+            $repository['id'],
             static::VUE_JS_GITHUB_ID
         );
     }

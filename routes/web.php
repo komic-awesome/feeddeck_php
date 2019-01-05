@@ -14,3 +14,15 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::group(
+    [
+        'prefix' => '/rss',
+        'namespace' => 'Rss',
+        'as' => 'rss.',
+    ],
+    function () {
+        Route::get('github-recently-mentioned-chinese/{owner}/{name}', 'GithubRecentlyMentionedChinese@show');
+    }
+);

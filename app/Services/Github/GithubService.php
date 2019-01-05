@@ -46,6 +46,6 @@ class GithubService
             );
         }
 
-        return $result['data'] ?? [];
+        return $result['data']['repository'] ?? null;
     }
 }
