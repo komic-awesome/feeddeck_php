@@ -1,0 +1,35 @@
+query($owner:String!, $name:String!, $limit:Int = 20, $after:String = null) {
+    repository(owner:$owner, name:$name) {
+        mentionableUsers(first: $limit, after: $after) {
+            edges {
+                node {
+                    id
+                    name
+                    login
+                    email
+                    location
+                    websiteUrl
+                    company
+                    companyHTML
+                    databaseId
+                    avatarUrl
+                    bio
+                    bioHTML
+                    url
+                }
+            }
+            pageInfo {
+                endCursor
+                startCursor
+                hasNextPage
+            }
+            totalCount
+        }
+    }
+    rateLimit {
+        limit
+        cost
+        remaining
+        resetAt
+    }
+}

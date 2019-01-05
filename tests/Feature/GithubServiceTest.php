@@ -21,4 +21,19 @@ class GithubServiceTest extends TestCase
             static::VUE_JS_GITHUB_ID
         );
     }
+
+    public function testFetchMentionableUsers()
+    {
+        $service = new GithubService();
+        $result = $service->fetchMentionableUsers(
+            $owner = 'vuejs',
+            $name = 'vue',
+            $limit = 1
+        );
+
+        $this->assertEquals(
+            $result['pageInfo']['hasNextPage'],
+            true
+        );
+    }
 }
