@@ -1,0 +1,14 @@
+query($owner:String!, $name:String!) {
+    repository(owner:$owner, name:$name) {
+        id,
+        description,
+        homepageUrl,
+        url
+    }
+    rateLimit {
+        limit
+        cost
+        remaining
+        resetAt
+    }
+}
