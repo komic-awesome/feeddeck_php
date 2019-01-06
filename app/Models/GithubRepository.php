@@ -31,10 +31,10 @@ class GithubRepository extends Model
             }
 
             $repo->fill([
-                'id_in_github' => $repository['id'],
-                'description' => $repository['description'],
-                'homepage_url' => $repository['homepageUrl'],
-                'url' => $repository['url'],
+                'id_in_github' => (string) $repository['id'],
+                'description' => (string) $repository['description'],
+                'homepage_url' => (string) $repository['homepageUrl'],
+                'url' => (string) $repository['url'],
             ])->save();
         }
 
