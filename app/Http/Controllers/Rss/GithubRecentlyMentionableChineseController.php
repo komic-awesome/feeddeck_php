@@ -10,7 +10,7 @@ use App\Jobs\SyncGithubRecentlyMentionableUsers;
 use Carbon\Carbon;
 use DB;
 
-class GithubRecentlyMentionableChinese extends Controller
+class GithubRecentlyMentionableChineseController extends Controller
 {
     public function show(string $owner, string $name)
     {

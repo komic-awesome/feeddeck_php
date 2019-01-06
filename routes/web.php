@@ -23,7 +23,7 @@ Route::group(
         'as' => 'rss.',
     ],
     function () {
-        Route::get('github-recently-mentionable-chinese/{owner}/{name}', 'GithubRecentlyMentionableChinese@show')
+        Route::get('github-recently-mentionable-chinese/{owner}/{name}', 'GithubRecentlyMentionableChineseController@show')
             ->name('github-recently-mentionable-chinese');
     }
 );
