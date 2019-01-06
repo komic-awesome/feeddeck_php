@@ -10,7 +10,7 @@ use App\Jobs\SyncGithubRecentlyMentionableUsers;
 use Carbon\Carbon;
 use DB;
 
-class GithubRecentlyMentionedChinese extends Controller
+class GithubRecentlyMentionableChinese extends Controller
 {
     public function show(string $owner, string $name)
     {
@@ -21,7 +21,7 @@ class GithubRecentlyMentionedChinese extends Controller
         }
 
         $link = url(
-            'rss.github-recently-mentioned-chinese',
+            'rss.github-recently-mentionable-chinese',
             [
                 $repo->owner,
                 $repo->name
