@@ -10,6 +10,14 @@ class GithubRepository extends Model
 {
     protected $guarded = [];
 
+    public function mentionableUsers()
+    {
+        return $this->belongsToMany(
+            'App\Models\GithubUser',
+            'github_repository_github_mentionable_user'
+        )->withTimestamps();
+    }
+
     public static function findOrCreateRepository($owner, $name)
     {
         $repo = static::firstOrNew(compact('owner', 'name'));

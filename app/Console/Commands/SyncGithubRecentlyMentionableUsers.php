@@ -49,7 +49,7 @@ class SyncGithubRecentlyMentionableUsers extends Command
         $service->traverseMentionableUsers(
             $owner,
             $name,
-            $callback = function ($mentionableUser) {
+            $callback = function ($mentionableUser) use ($repo) {
                 $user = GithubUser::firstOrCreate(
                     [
                         'id_in_github' => $mentionableUser['id']
@@ -69,6 +69,11 @@ class SyncGithubRecentlyMentionableUsers extends Command
                         'bio_html' => (string) $mentionableUser['bioHTML'],
                     ]
                 );
+
+                $repo->mentionableUsers()
+                     ->syncWithoutDetaching(
+                         [ $user->id ]
+                     );
             }
         );
     }
