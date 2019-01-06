@@ -44,37 +44,6 @@ class SyncGithubRecentlyMentionableUsers extends Command
         $name = $this->argument('name');
 
         $repo = GithubRepository::findOrCreateRepository($owner, $name);
-        $service = new GithubService();
-
-        $service->traverseMentionableUsers(
-            $owner,
-            $name,
-            $callback = function ($mentionableUser) use ($repo) {
-                $user = GithubUser::firstOrCreate(
-                    [
-                        'id_in_github' => $mentionableUser['id']
-                    ],
-                    [
-                        'name' => (string) $mentionableUser['name'],
-                        'login' => (string) $mentionableUser['login'],
-                        'email' => (string) $mentionableUser['email'],
-                        'location' => (string) $mentionableUser['location'],
-                        'website_url' => (string) $mentionableUser['websiteUrl'],
-                        'url' => (string) $mentionableUser['url'],
-                        'company' => (string) $mentionableUser['company'],
-                        'company_html' => (string) $mentionableUser['companyHTML'],
-                        'database_id_in_github' => (string) $mentionableUser['databaseId'],
-                        'avatar_url' => (string) $mentionableUser['avatarUrl'],
-                        'bio' => (string) $mentionableUser['bio'],
-                        'bio_html' => (string) $mentionableUser['bioHTML'],
-                    ]
-                );
-
-                $repo->mentionableUsers()
-                     ->syncWithoutDetaching(
-                         [ $user->id ]
-                     );
-            }
-        );
+        $repo->syncGithubRecentlyMentionableUsers();
     }
 }

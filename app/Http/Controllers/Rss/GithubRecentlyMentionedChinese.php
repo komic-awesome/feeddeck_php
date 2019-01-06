@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\GithubRepository;
+use App\Jobs\SyncGithubRecentlyMentionableUsers;
 use Carbon\Carbon;
 use DB;
 
@@ -14,6 +15,11 @@ class GithubRecentlyMentionedChinese extends Controller
     public function show(string $owner, string $name)
     {
         $repo = GithubRepository::findOrCreateRepository($owner, $name);
+
+        if ($repo->wasRecentlyCreated) {
+            SyncGithubRecentlyMentionableUsers::dispatch($repo);
+        }
+
         $link = url(
             'rss.github-recently-mentioned-chinese',
             [
