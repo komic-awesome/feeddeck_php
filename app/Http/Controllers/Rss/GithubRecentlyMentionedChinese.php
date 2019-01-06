@@ -35,13 +35,13 @@ class GithubRecentlyMentionedChinese extends Controller
             ->take($MAX_ITEM)
             ->get();
 
-        $items = collect($mentionableUsers)->map(function ($user) {
+        $items = collect($mentionableUsers)->map(function ($user) use ($repo) {
             $name = $user->name ?: $user->login;
 
             return [
                 'title' => $name,
                 'link' => $user->url,
-                'id' => $user->id_in_github,
+                'id' => $repo->id_in_github . '/' . $user->id_in_github,
                 'author' => $name,
                 'updated' => $user->pivot->created_at->toIso8601String(),
                 'summary' => view(
