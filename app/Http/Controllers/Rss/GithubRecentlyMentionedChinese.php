@@ -61,7 +61,7 @@ class GithubRecentlyMentionedChinese extends Controller
         });
 
         $meta = [
-            'title' => "{$repo->owner}/{$repo->name} 的社区又出现了新的有趣灵魂",
+            'title' => "{$repo->owner}/{$repo->name} 的中文社区又出现了新的有趣灵魂",
             'link' => $link,
             'id' => $link,
             'updated' => $items->first()['updated'] ?? Carbon::now()->toIso8601String(),
