@@ -25,15 +25,41 @@ class GithubServiceTest extends TestCase
     public function testFetchMentionableUsers()
     {
         $service = new GithubService();
-        $result = $service->fetchMentionableUsers(
+
+        list(
+            $edges,
+            $pageInfo,
+            $totalCount
+        ) = $service->fetchMentionableUsers(
             $owner = 'vuejs',
             $name = 'vue',
             $limit = 1
         );
 
         $this->assertEquals(
-            $result['pageInfo']['hasNextPage'],
+            $pageInfo['hasNextPage'],
             true
+        );
+    }
+
+    public function testTraverseMentionableUsers()
+    {
+        $service = new GithubService();
+        $service->traverseMentionableUsers(
+            $owner = 'komic-awesome',
+            $name = 'komic',
+            $callback = function ($mentionableUser) {
+                $this->assertTrue(
+                    in_array(
+                        $mentionableUser['login'],
+                        [
+                            'kyon0304',
+                            'hxgdzyuyi'
+                        ]
+                    )
+                );
+            },
+            $limit = 1
         );
     }
 }

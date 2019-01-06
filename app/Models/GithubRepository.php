@@ -15,7 +15,8 @@ class GithubRepository extends Model
         $repo = static::firstOrNew(compact('owner', 'name'));
 
         if (! $repo->exists) {
-            $repository = GithubService::fetchGithubRepository($owner, $name);
+            $service = new GithubService();
+            $repository = $service->fetchGithubRepository($owner, $name);
 
             if (empty($repository)) {
                 throw new Exception('repository is null.');

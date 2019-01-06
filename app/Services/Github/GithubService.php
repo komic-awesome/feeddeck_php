@@ -4,7 +4,7 @@ namespace App\Services\Github;
 
 class GithubService
 {
-    public static function fetchGithubRepository($owner, $name)
+    public function fetchGithubRepository($owner, $name)
     {
         $client = new GithubClient();
 
@@ -16,7 +16,7 @@ class GithubService
         return $response['repository'] ?? null;
     }
 
-    public static function fetchMentionableUsers($owner, $name, $limit, $after = null)
+    public function fetchMentionableUsers($owner, $name, $limit, $after = null)
     {
         $client = new GithubClient();
 
@@ -25,6 +25,31 @@ class GithubService
             compact('owner', 'name', 'limit', 'after')
         );
 
-        return $response['repository']['mentionableUsers'] ?? null;
+        $result = $response['repository']['mentionableUsers'] ?? [];
+
+        return [
+            $result['edges'],
+            $result['pageInfo'],
+            $result['totalCount']
+        ];
+    }
+
+    public function traverseMentionableUsers($owner, $name, callable $callback, $limit = 100)
+    {
+        $hasNextPage = false;
+        $after = null;
+
+        do {
+            list(
+                $edges,
+                $pageInfo,
+                $totalCount
+            ) = $this->fetchMentionableUsers($owner, $name, $limit, $after);
+
+            collect($edges)->pluck('node')->each($callback);
+
+            $hasNextPage = $pageInfo['hasNextPage'];
+            $after = $pageInfo['endCursor'];
+        } while ($hasNextPage);
     }
 }
