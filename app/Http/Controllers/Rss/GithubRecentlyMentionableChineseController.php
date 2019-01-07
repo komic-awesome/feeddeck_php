@@ -20,7 +20,7 @@ class GithubRecentlyMentionableChineseController extends Controller
             SyncGithubRecentlyMentionableUsers::dispatch($repo);
         }
 
-        $link = url(
+        $link = route(
             'rss.github-recently-mentionable-chinese',
             [
                 $repo->owner,
