@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Services\Github\GithubService;
+use App\Jobs\SyncGithubRecentlyMentionableUsers as SyncGithubRecentlyMentionableUsersJob;
 use App\Models\GithubUser;
 use App\Models\GithubRepository;
 
@@ -44,6 +45,6 @@ class SyncGithubRecentlyMentionableUsers extends Command
         $name = $this->argument('name');
 
         $repo = GithubRepository::findOrCreateRepository($owner, $name);
-        $repo->syncGithubRecentlyMentionableUsers();
+        SyncGithubRecentlyMentionableUsersJob::dispatch($repo);
     }
 }

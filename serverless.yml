@@ -1,0 +1,73 @@
+service: feeddeck
+
+provider:
+    name: aws
+    region: us-east-1
+    runtime: provided
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "sqs:ChangeMessageVisibility"
+          - "sqs:DeleteMessage"
+          - "sqs:GetQueueAttributes"
+          - "sqs:ReceiveMessage"
+        Resource: "arn:aws:sqs:us-east-1:693032669800:feeddeck_prod_default"
+    environment:
+        # Laravel environment variables
+        APP_STORAGE: '/tmp'
+        APP_NAME: 'Laravel'
+        APP_ENV: 'production'
+        DB_CONNECTION: 'pgsql'
+        VIEW_COMPILED_PATH: '/tmp/storage/framework/views'
+        SESSION_DRIVER: 'array'
+        LOG_CHANNEL: 'stderr'
+        QUEUE_CONNECTION: 'sqs'
+        APP_KEY: ${ssm:/feeddeck_php/prod/APP_KEY}
+        GITHUB_API_TOKEN: ${ssm:/feeddeck_php/prod/GITHUB_API_TOKEN}
+        DB_HOST: ${ssm:/feeddeck_php/prod/DB_HOST}
+        DB_PORT: ${ssm:/feeddeck_php/prod/DB_PORT}
+        DB_DATABASE: ${ssm:/feeddeck_php/prod/DB_DATABASE}
+        DB_USERNAME: ${ssm:/feeddeck_php/prod/DB_USERNAME}
+        DB_PASSWORD: ${ssm:/feeddeck_php/prod/DB_PASSWORD}
+        SQS_KEY: ${ssm:/feeddeck_php/prod/SQS_KEY}
+        SQS_SECRET: ${ssm:/feeddeck_php/prod/SQS_SECRET}
+        SQS_PREFIX: 'https://sqs.us-east-1.amazonaws.com/693032669800'
+        SQS_QUEUE: 'feeddeck_prod_default'
+
+
+plugins:
+    - ./vendor/bref/bref
+
+functions:
+    website:
+        handler: public/index.php
+        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+        layers:
+            - ${bref:layer.php-73-fpm}
+        events:
+            -   http: 'ANY /'
+            -   http: 'ANY /{proxy+}'
+    artisan:
+        handler: artisan
+        timeout: 120 # in seconds
+        layers:
+            - ${bref:layer.php-73} # PHP
+            - ${bref:layer.console} # The "console" layer
+
+    handle-sqs:
+        handler: handle-sqs
+        timeout: 30 # in seconds
+        reservedConcurrency: 5
+        layers:
+            - ${bref:layer.php-73} # PHP
+        events:
+          - sqs:
+            arn: arn:aws:sqs:us-east-1:693032669800:feeddeck_prod_default
+
+    handle-schedule:
+        handler: handle-schedule
+        timeout: 30 # in seconds
+        layers:
+            - ${bref:layer.php-73} # PHP
+        events:
+            - schedule: rate(1 day)
